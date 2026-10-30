@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+vendor/
+
+# Builds
+.next/
+out/
+dist/
+build/
+bin/
+*.exe
+*.test
+coverage/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log

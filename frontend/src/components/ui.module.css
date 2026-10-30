@@ -1,0 +1,167 @@
+.header {
+  background: var(--pa-navy);
+  padding: 16px 24px;
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--pa-white);
+  text-decoration: none;
+}
+
+.brand span {
+  color: var(--pa-turquoise);
+}
+
+.page {
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--pa-white);
+  border-radius: var(--pa-radius);
+  box-shadow: var(--pa-shadow);
+  padding: 32px;
+}
+
+.wide {
+  max-width: 720px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 36px;
+  margin: 0 0 8px;
+}
+
+.subtitle {
+  color: var(--pa-gray);
+  margin: 0 0 24px;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.input {
+  font: inherit;
+  padding: 10px 12px;
+  border: 1px solid var(--pa-border);
+  border-radius: 8px;
+  background: var(--pa-white);
+  color: var(--pa-navy);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--pa-danger);
+}
+
+.hint,
+.fieldError {
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.hint {
+  color: var(--pa-gray);
+}
+
+.fieldError {
+  color: var(--pa-danger);
+}
+
+.alert {
+  background: var(--pa-danger-bg);
+  color: var(--pa-danger);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 16px;
+  background: var(--pa-cobalt);
+  color: var(--pa-white);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  display: inline-block;
+}
+
+.button:hover {
+  background: var(--pa-navy);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--pa-cobalt);
+  border: 1px solid var(--pa-cobalt);
+}
+
+.secondary:hover {
+  background: var(--pa-ivory);
+}
+
+.footer {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--pa-gray);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hero {
+  max-width: 720px;
+  text-align: center;
+}
+
+.hero .title {
+  font-size: 40px;
+  line-height: 48px;
+}
+
+.dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 8px 16px;
+  margin: 0 0 24px;
+}
+
+.dl dt {
+  color: var(--pa-gray);
+}
+
+.dl dd {
+  margin: 0;
+}
