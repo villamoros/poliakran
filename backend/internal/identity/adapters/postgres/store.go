@@ -80,18 +80,44 @@ func (s *Store) FindCredentialsByEmail(ctx context.Context, emailNormalized stri
 }
 
 func (s *Store) DefaultTenantID(ctx context.Context, userID string) (string, error) {
-	// Prioriza el tenant personal y, después, la membresía más antigua.
+	// Quien gestiona un tenant (owner/admin) entra en él; si no, se prioriza
+	// el tenant personal y, después, la membresía más antigua (ADR-0008).
+	// El cambio explícito de tenant activo llegará con LMS-US-016.
 	var id string
 	err := s.pool.QueryRow(ctx, `
 		SELECT m.tenant_id
 		FROM memberships m JOIN tenants t ON t.id = m.tenant_id
 		WHERE m.user_id = $1
-		ORDER BY (t.kind = 'personal') DESC, m.created_at
+		ORDER BY (m.role IN ('owner', 'admin')) DESC, (t.kind = 'personal') DESC, m.created_at
 		LIMIT 1`, userID).Scan(&id)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return "", fmt.Errorf("el usuario %s no tiene membresías", userID)
 	}
 	return id, err
+}
+
+func (s *Store) PlatformTenantID(ctx context.Context) (string, error) {
+	var id string
+	err := s.pool.QueryRow(ctx, `SELECT id FROM tenants WHERE kind = $1`, domain.TenantKindPlatform).Scan(&id)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", errors.New("no existe el tenant de plataforma: ¿faltan migraciones?")
+	}
+	return id, err
+}
+
+func (s *Store) GrantRole(ctx context.Context, emailNormalized, tenantID string, role authz.Role) error {
+	tag, err := s.pool.Exec(ctx, `
+		INSERT INTO memberships (tenant_id, user_id, role)
+		SELECT $2, id, $3 FROM users WHERE email_normalized = $1
+		ON CONFLICT (tenant_id, user_id) DO UPDATE SET role = EXCLUDED.role`,
+		emailNormalized, tenantID, role)
+	if err != nil {
+		return fmt.Errorf("concediendo rol: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return domain.ErrUserNotFound
+	}
+	return nil
 }
 
 func (s *Store) CreateSession(ctx context.Context, n app.NewSession) error {

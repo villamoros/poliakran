@@ -54,7 +54,8 @@ Monolito modular en Go con arquitectura hexagonal y contextos delimitados
 
 Piezas transversales: autorización centralizada por políticas
 ([ADR-0005](docs/adr/0005-autorizacion-centralizada.md)) y multitenencia con
-`tenant_id` ([ADR-0004](docs/adr/0004-multitenencia.md), pendiente de confirmación).
+`tenant_id` ([ADR-0004](docs/adr/0004-multitenencia.md)); el catálogo público
+pertenece al tenant de plataforma ([ADR-0008](docs/adr/0008-catalogo-tenant-plataforma.md)).
 
 ## Preparación para IA
 
@@ -70,9 +71,10 @@ El mentor de IA **no forma parte del MVP**. Desde el diseño inicial se mantiene
 
 ## Estado
 
-**Sprint 1 — Fundamentos del producto.** Incremento ejecutable con registro,
-inicio y cierre de sesión de punta a punta (Next.js → Go → PostgreSQL).
-Ver [docs/scrum/sprint-01.md](docs/scrum/sprint-01.md).
+**Sprint 2 — Catálogo y administración inicial.** El administrador crea, edita,
+publica y retira cursos; los visitantes consultan el catálogo en `/cursos`.
+Ver [docs/scrum/sprint-02.md](docs/scrum/sprint-02.md). Sprint anterior:
+[Sprint 1 — Fundamentos](docs/scrum/sprint-01.md).
 
 ## Puesta en marcha rápida
 

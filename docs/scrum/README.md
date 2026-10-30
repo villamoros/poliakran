@@ -10,6 +10,7 @@ cambian sprint a sprint.
 | [product-backlog.md](product-backlog.md) | Épicas, historias, deuda técnica y decisiones pendientes, ordenadas |
 | [definition-of-done.md](definition-of-done.md) | Definition of Done y Definition of Ready |
 | [sprint-01.md](sprint-01.md) | Sprint 1 — Fundamentos del producto |
+| [sprint-02.md](sprint-02.md) | Sprint 2 — Catálogo y administración inicial |
 
 Cadencia: sprints de 2 semanas. Eventos: Sprint Planning, Daily Scrum (15 min),
 Sprint Review y Sprint Retrospective. El refinamiento del backlog es continuo.

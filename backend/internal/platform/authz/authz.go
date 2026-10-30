@@ -35,8 +35,10 @@ type Action string
 
 const (
 	ActionIdentityReadSelf Action = "identity:read_self"
-	// Acciones de próximos sprints; se declaran aquí para fijar el vocabulario.
+	// ActionCatalogManage permite crear, consultar y editar los cursos del tenant.
 	ActionCatalogManage Action = "catalog:manage"
+	// ActionCatalogPublish permite publicar y retirar cursos del catálogo.
+	ActionCatalogPublish Action = "catalog:publish"
 )
 
 // Resource describe el objeto sobre el que se actúa. TenantID vacío significa
@@ -67,6 +69,7 @@ func NewPolicy() *Policy {
 	return &Policy{rules: map[Action]rule{
 		ActionIdentityReadSelf: func(p Principal, r Resource) bool { return r.OwnerID == p.UserID },
 		ActionCatalogManage:    func(p Principal, _ Resource) bool { return p.HasRole(RoleAdmin, RoleOwner) },
+		ActionCatalogPublish:   func(p Principal, _ Resource) bool { return p.HasRole(RoleAdmin, RoleOwner) },
 	}}
 }
 

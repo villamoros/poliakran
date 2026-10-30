@@ -10,7 +10,10 @@ export default function HomePage() {
           Cursos cortos organizados en módulos y lecciones, con evaluaciones y seguimiento de tu progreso.
         </p>
         <div className={styles.actions} style={{ justifyContent: "center" }}>
-          <Link href="/registro" className={styles.button}>
+          <Link href="/cursos" className={styles.button}>
+            Ver cursos
+          </Link>
+          <Link href="/registro" className={`${styles.button} ${styles.secondary}`}>
             Crear cuenta
           </Link>
           <Link href="/ingresar" className={`${styles.button} ${styles.secondary}`}>

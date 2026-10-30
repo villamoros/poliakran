@@ -2,7 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const SESSION_COOKIE = "pa_session";
 
-// Comprobación optimista: sin cookie de sesión no tiene sentido mostrar el panel.
+// Comprobación optimista: sin cookie de sesión no tiene sentido mostrar el panel
+// ni la administración.
 // La validación real de la sesión ocurre siempre en el backend.
 export function proxy(request: NextRequest) {
   if (!request.cookies.has(SESSION_COOKIE)) {
@@ -14,5 +15,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/panel/:path*"],
+  matcher: ["/panel/:path*", "/admin/:path*"],
 };

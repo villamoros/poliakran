@@ -22,12 +22,13 @@ type Tenant struct {
 	ID   string
 	Slug string
 	Name string
-	Kind string // "personal" u "organization"
+	Kind string // "personal", "organization" o "platform"
 }
 
 const (
 	TenantKindPersonal     = "personal"
 	TenantKindOrganization = "organization"
+	TenantKindPlatform     = "platform"
 
 	MinPasswordLength = 10
 	MaxPasswordLength = 128
@@ -39,6 +40,7 @@ var (
 	ErrInvalidCredentials = errors.New("identity: credenciales inválidas")
 	ErrSessionNotFound    = errors.New("identity: sesión inválida o expirada")
 	ErrUserDisabled       = errors.New("identity: usuario deshabilitado")
+	ErrUserNotFound       = errors.New("identity: usuario no encontrado")
 )
 
 // ValidationError agrupa los errores de validación por campo.

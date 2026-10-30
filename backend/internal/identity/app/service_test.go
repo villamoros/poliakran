@@ -59,6 +59,19 @@ func (m *memStore) DefaultTenantID(_ context.Context, userID string) (string, er
 	return m.tenants[userID], nil
 }
 
+func (m *memStore) PlatformTenantID(context.Context) (string, error) { return "tenant-platform", nil }
+
+func (m *memStore) GrantRole(_ context.Context, email, tenantID string, _ authz.Role) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	c, ok := m.users[email]
+	if !ok {
+		return domain.ErrUserNotFound
+	}
+	m.tenants[c.User.ID] = tenantID
+	return nil
+}
+
 func (m *memStore) CreateSession(_ context.Context, s app.NewSession) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
@@ -211,5 +224,28 @@ func TestCredentialsNeverReachLogs(t *testing.T) {
 		if strings.Contains(out, secret) {
 			t.Fatalf("el log contiene un dato sensible %q:\n%s", secret, out)
 		}
+	}
+}
+
+func TestGrantPlatformRole(t *testing.T) {
+	ctx := context.Background()
+	store := newMemStore()
+	svc := newService(t, store, io.Discard)
+	res, err := svc.Register(ctx, app.RegisterInput{Email: "ana@example.com", DisplayName: "Ana", Password: "contraseña-segura"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if err := svc.GrantPlatformRole(ctx, " ANA@example.com ", authz.RoleOwner); err != nil {
+		t.Fatalf("conceder owner: %v", err)
+	}
+	if store.tenants[res.User.ID] != "tenant-platform" {
+		t.Fatalf("la membresía no apunta al tenant de plataforma: %v", store.tenants)
+	}
+	if err := svc.GrantPlatformRole(ctx, "nadie@example.com", authz.RoleAdmin); !errors.Is(err, domain.ErrUserNotFound) {
+		t.Fatalf("correo desconocido: se esperaba ErrUserNotFound, se obtuvo %v", err)
+	}
+	if err := svc.GrantPlatformRole(ctx, "ana@example.com", authz.RoleStudent); err == nil {
+		t.Fatal("solo owner y admin pueden concederse en la plataforma")
 	}
 }

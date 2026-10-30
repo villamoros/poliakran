@@ -51,6 +51,49 @@ export function validateLogin(v: LoginValues): FieldErrors {
   return errors;
 }
 
+export interface CourseValues {
+  title: string;
+  summary: string;
+  description: string;
+  durationHours: number;
+  objectives: string[];
+  prerequisites: string;
+}
+
+const runes = (s: string) => [...s].length;
+const collapse = (s: string) => s.trim().replace(/\s+/g, " ");
+
+// Reglas de internal/catalog/domain.NewDetails: título y descripción breve son
+// obligatorios; el resto se exige al publicar y lo comprueba el backend.
+export function validateCourse(v: CourseValues): FieldErrors {
+  const errors: FieldErrors = {};
+  const title = collapse(v.title);
+  const summary = collapse(v.summary);
+
+  if (!title) errors.title = "Escribe el título del curso.";
+  else if (runes(title) < 5 || runes(title) > 120) errors.title = "El título debe tener entre 5 y 120 caracteres.";
+
+  if (!summary) errors.summary = "Escribe una descripción breve.";
+  else if (runes(summary) < 20 || runes(summary) > 280)
+    errors.summary = "La descripción breve debe tener entre 20 y 280 caracteres.";
+
+  if (runes(v.description.trim()) > 10000)
+    errors.description = "La descripción completa no puede superar 10 000 caracteres.";
+
+  if (!Number.isInteger(v.durationHours) || v.durationHours < 0 || v.durationHours > 500)
+    errors.durationHours = "La duración debe estar entre 1 y 500 horas.";
+
+  const objectives = v.objectives.map(collapse).filter(Boolean);
+  if (objectives.length > 10) errors.objectives = "Indica como máximo 10 objetivos.";
+  else if (objectives.some((o) => runes(o) < 3 || runes(o) > 200))
+    errors.objectives = "Cada objetivo debe tener entre 3 y 200 caracteres.";
+
+  if (runes(v.prerequisites.trim()) > 1000)
+    errors.prerequisites = "Los requisitos previos no pueden superar 1000 caracteres.";
+
+  return errors;
+}
+
 // safeNextPath evita redirecciones abiertas: solo acepta rutas internas.
 export function safeNextPath(next: string | null | undefined, fallback = "/panel"): string {
   if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) return fallback;
