@@ -49,6 +49,11 @@ type Store interface {
 	FindCredentialsByEmail(ctx context.Context, emailNormalized string) (Credentials, error)
 	// DefaultTenantID devuelve el tenant con el que inicia sesión el usuario.
 	DefaultTenantID(ctx context.Context, userID string) (string, error)
+	// PlatformTenantID devuelve el tenant del propio Politécnico Akran (ADR-0008).
+	PlatformTenantID(ctx context.Context) (string, error)
+	// GrantRole crea o actualiza la membresía del usuario en el tenant.
+	// Devuelve domain.ErrUserNotFound si el correo no está registrado.
+	GrantRole(ctx context.Context, emailNormalized, tenantID string, role authz.Role) error
 	CreateSession(ctx context.Context, s NewSession) error
 	// FindActiveSession devuelve domain.ErrSessionNotFound si no existe,
 	// expiró o fue revocada.

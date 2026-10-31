@@ -41,6 +41,19 @@ go run ./cmd/api migrate create nombre sql   # nueva migración en el directorio
 Las migraciones viven en `backend/migrations/`, se nombran `NNNNN_descripcion.sql`
 y deben incluir su sección `-- +goose Down`.
 
+## Primer administrador (LMS-US-014)
+
+El catálogo lo gestionan los `owner`/`admin` del tenant de plataforma. Para
+crear el primero, registra la cuenta en `/registro` y después:
+
+```bash
+cd backend
+go run ./cmd/api grant-role tu-correo@ejemplo.com owner
+```
+
+Cierra sesión y vuelve a entrar: el panel mostrará **Gestionar cursos**
+(`/admin/cursos`). Los cursos publicados aparecen en `/cursos`.
+
 ## Pruebas
 
 ```bash
@@ -59,12 +72,16 @@ npm test
 
 `-p 1` evita que dos paquetes migren la base de pruebas a la vez.
 
+`internal/architecture_test.go` falla si un contexto importa a otro o si un
+`domain/` importa HTTP o base de datos (ADR-0001, LMS-TD-001).
+
 ## Logs
 
 El backend escribe una línea JSON por evento en la salida estándar. Cada
 petición HTTP genera un `http_request` con `request_id`, `method`, `path`,
 `status` y `duration_ms`. Los eventos de identidad (`user_registered`,
-`login_succeeded`, `login_failed`) solo incluyen identificadores, nunca correos,
+`login_succeeded`, `login_failed`) y del catálogo (`course_created`,
+`course_updated`, `course_published`, `course_withdrawn`) solo incluyen identificadores, nunca correos,
 contraseñas ni tokens. Claves como `password`, `token` o `cookie` se redactan
 automáticamente.
 
@@ -79,10 +96,11 @@ backend/
     domain/                reglas y modelo
     app/                   casos de uso y puertos
     adapters/              postgres, httpapi, security
+  internal/catalog/        contexto de Catálogo (cursos y publicación)
 frontend/
-  src/app/                 rutas (App Router)
-  src/components/          formularios y panel
-  src/lib/                 cliente API y validación
+  src/app/                 rutas (App Router): /cursos, /admin/cursos, /panel…
+  src/components/          formularios, panel, catálogo y administración
+  src/lib/                 cliente API, catálogo y validación
   src/proxy.ts             redirección optimista de rutas protegidas
 docs/
   adr/  api/  scrum/

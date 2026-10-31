@@ -1,6 +1,8 @@
 // Cliente de la API del backend. Las peticiones van a /api/* en el mismo
 // origen; la cookie de sesión HttpOnly viaja sola y nunca se lee desde JS.
 
+import type { AdminCourse, CourseInput } from "./catalog";
+
 export interface User {
   id: string;
   email: string;
@@ -10,7 +12,7 @@ export interface User {
 
 export interface Me {
   user: User;
-  tenant: { id: string; name: string; kind: "personal" | "organization" };
+  tenant: { id: string; name: string; kind: "personal" | "organization" | "platform" };
   roles: string[];
 }
 
@@ -57,4 +59,24 @@ export const api = {
     request<{ user: User }>("/api/v1/auth/login", { method: "POST", body: JSON.stringify(body) }),
   logout: () => request<void>("/api/v1/auth/logout", { method: "POST" }),
   me: () => request<Me>("/api/v1/auth/me"),
+
+  // Administración del catálogo (requiere rol admin u owner en el tenant activo).
+  listCourses: () => request<{ items: AdminCourse[] }>("/api/v1/admin/courses"),
+  getCourse: (id: string) => request<{ course: AdminCourse }>(`/api/v1/admin/courses/${encodeURIComponent(id)}`),
+  createCourse: (body: CourseInput) =>
+    request<{ course: AdminCourse }>("/api/v1/admin/courses", { method: "POST", body: JSON.stringify(body) }),
+  updateCourse: (id: string, version: number, body: CourseInput) =>
+    request<{ course: AdminCourse }>(`/api/v1/admin/courses/${encodeURIComponent(id)}`, {
+      method: "PUT",
+      body: JSON.stringify({ ...body, version }),
+    }),
+  publishCourse: (id: string) =>
+    request<{ course: AdminCourse }>(`/api/v1/admin/courses/${encodeURIComponent(id)}/publish`, { method: "POST" }),
+  withdrawCourse: (id: string) =>
+    request<{ course: AdminCourse }>(`/api/v1/admin/courses/${encodeURIComponent(id)}/withdraw`, { method: "POST" }),
 };
+
+/** Roles con permiso para gestionar el catálogo (la autoridad es el backend). */
+export function canManageCatalog(me: Me | null): boolean {
+  return !!me && me.roles.some((r) => r === "admin" || r === "owner");
+}

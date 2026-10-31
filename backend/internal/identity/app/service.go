@@ -136,6 +136,29 @@ func (s *Service) Logout(ctx context.Context, token string) error {
 	return s.store.RevokeSession(ctx, s.tokens.Hash(token), s.now())
 }
 
+// PlatformTenantID devuelve el tenant cuyo catálogo es público (ADR-0008).
+func (s *Service) PlatformTenantID(ctx context.Context) (string, error) {
+	return s.store.PlatformTenantID(ctx)
+}
+
+// GrantPlatformRole concede un rol de gestión en el tenant de plataforma.
+// Solo se usa desde el comando de arranque (LMS-US-014), nunca desde la API
+// pública: así se crea el primer owner de forma segura.
+func (s *Service) GrantPlatformRole(ctx context.Context, email string, role authz.Role) error {
+	if role != authz.RoleOwner && role != authz.RoleAdmin {
+		return fmt.Errorf("rol no admitido para la plataforma: %q", role)
+	}
+	tenantID, err := s.store.PlatformTenantID(ctx)
+	if err != nil {
+		return err
+	}
+	if err := s.store.GrantRole(ctx, domain.NormalizeEmail(email), tenantID, role); err != nil {
+		return err
+	}
+	s.log.InfoContext(ctx, "platform_role_granted", "tenant_id", tenantID, "role", string(role))
+	return nil
+}
+
 func (s *Service) openSession(ctx context.Context, user domain.User, tenantID, userAgent string) (AuthResult, error) {
 	token, hash, err := s.tokens.New()
 	if err != nil {

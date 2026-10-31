@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { api, ApiError, type Me } from "@/lib/api";
+import { api, ApiError, canManageCatalog, type Me } from "@/lib/api";
 import styles from "./ui.module.css";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -61,9 +62,16 @@ export function StudentPanel() {
         <dt>Espacio</dt>
         <dd>{me.tenant.kind === "personal" ? "Cuenta personal" : me.tenant.name}</dd>
       </dl>
-      <button type="button" className={`${styles.button} ${styles.secondary}`} onClick={logout} disabled={leaving}>
-        {leaving ? "Cerrando sesión…" : "Cerrar sesión"}
-      </button>
+      <div className={styles.actions}>
+        {canManageCatalog(me) && (
+          <Link href="/admin/cursos" className={styles.button}>
+            Gestionar cursos
+          </Link>
+        )}
+        <button type="button" className={`${styles.button} ${styles.secondary}`} onClick={logout} disabled={leaving}>
+          {leaving ? "Cerrando sesión…" : "Cerrar sesión"}
+        </button>
+      </div>
     </>
   );
 }
