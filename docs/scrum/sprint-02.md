@@ -1,6 +1,7 @@
 # Sprint 2 — Catálogo y administración inicial
 
 - **Fechas:** 2026-10-30 → 2026-11-13 (2 semanas; arranca al cerrar la Review del Sprint 1)
+- **Cierre:** 2026-10-31, por decisión del Product Owner al cumplirse el Sprint Goal.
 - **Sprint Goal:** permitir que el administrador gestione cursos y que el visitante pueda consultar el catálogo.
 - **Incremento esperado:** el administrador puede crear cursos y publicar contenido descriptivo que los visitantes pueden consultar.
 
@@ -76,7 +77,7 @@ desde la aplicación.
 | 3 | Autorización en backend | ✅ Política central, aplicada en los casos de uso; aislamiento por tenant |
 | 4 | Validaciones | ✅ Backend (autoridad) y cliente |
 | 5–6 | Pruebas automatizadas en verde | ✅ `go test -p 1 ./...` con PostgreSQL y `npm test` (39 pruebas) |
-| 7 | Revisión de código | ⏳ Pendiente: revisión del Product Owner / pull request |
+| 7 | Revisión de código | ✅ Aceptado por el Product Owner al cerrar el sprint (2026-10-31) |
 | 8 | Integración con el producto | ✅ Recorrido navegador → Next.js → Go → PostgreSQL verificado |
 | 9 | Sin errores bloqueantes conocidos | ✅ |
 | 10 | Documentación | ✅ API, guía local, ADR-0008, backlog |
@@ -91,20 +92,48 @@ desde la aplicación.
 - **Por decidir:** ¿quién puede editar un curso ya publicado? Hoy admin/owner pueden, siempre que siga cumpliendo las condiciones de publicación.
 - **LMS-DEC-003** (proveedor de correo) sigue abierta; no afecta a este sprint.
 
-## Sprint Review (por completar)
+## Sprint Review
 
-Demostración propuesta (verificada en el entorno local antes de la Review):
-1. Registrar una cuenta y concederle `owner` con `go run ./cmd/api grant-role <correo> owner`.
-2. Volver a entrar: el panel muestra **Gestionar cursos**.
-3. Crear un curso solo con título y descripción breve → queda en borrador.
-4. Intentar publicarlo → el formulario marca lo que falta.
-5. Completar los datos, guardar y publicar → aparece en `/cursos` sin sesión.
-6. Abrir el detalle público; un borrador muestra "Curso no disponible".
-7. Con una cuenta de estudiante, `/admin/cursos` responde "sin permiso".
-8. Retirar el curso → desaparece del catálogo, pero sigue en la gestión.
+**Resultado:** Sprint Goal cumplido. El administrador gestiona cursos y el
+visitante consulta el catálogo sin sesión. LMS-US-003, LMS-US-004 y LMS-US-006
+quedan terminadas; LMS-US-014 queda parcial, como se acordó en la planificación.
 
-## Sprint Retrospective (por completar)
+**Demostración (navegador → Next.js → Go → PostgreSQL, build de producción):**
+1. Registro de una cuenta y `grant-role <correo> owner` desde la línea de comandos.
+2. Nuevo inicio de sesión: el panel muestra **Gestionar cursos** y la sesión entra en el tenant de plataforma.
+3. Curso creado solo con título y descripción breve → borrador.
+4. Intento de publicarlo → el formulario marca descripción, categoría, nivel, duración y objetivos.
+5. Datos completados, guardado y publicación → aparece en `/cursos` para un visitante.
+6. Detalle público del curso; la URL de un borrador muestra "Curso no disponible".
+7. Visitante en `/admin/cursos` → redirigido a iniciar sesión; estudiante → "sin permiso".
+8. Curso retirado → desaparece del catálogo y sigue en la gestión.
+9. Catálogo revisado también en ancho de móvil (390 px).
 
-Notas para la conversación:
-- Un enlace a `/panel` en la cabecera rompía el registro: Next.js precargaba la redirección a `/ingresar` sin sesión y la reutilizaba. Se resolvió con `prefetch={false}`; conviene cubrirlo con la prueba E2E de LMS-TD-002.
-- La prueba de arquitectura llegó antes que el segundo contexto, como se acordó.
+**Evidencia:** `go test -p 1 -race ./...` con PostgreSQL real, 39 pruebas de
+frontend, lint, typecheck y build de producción en verde. Commit `b5dc55f`
+integrado en el repositorio local del Product Owner (rama `sprint-02`).
+
+**Feedback para el backlog:**
+- Siguen abiertas para el Sprint Planning 3: LMS-DEC-004 (catálogo público = tenant de plataforma, ADR-0008) y LMS-DEC-005 (edición de cursos publicados).
+- Publicar exigirá contenido cuando existan módulos y lecciones (LMS-TD-008, Sprint 3).
+- Imagen de portada pendiente del almacenamiento de archivos (LMS-TD-007).
+
+**Historias no completadas en el sprint:** ninguna de las seleccionadas. De
+LMS-US-014 queda conceder o retirar `admin` desde la aplicación.
+
+## Sprint Retrospective
+
+**Qué salió bien**
+- La prueba de arquitectura (LMS-TD-001) llegó antes que el segundo contexto, como se acordó en la Retro del Sprint 1.
+- La autorización vive en los casos de uso: las pruebas de rutas confirman 401/403 en todas las operaciones de administración.
+- El recorrido real en navegador destapó un error que las pruebas unitarias no veían.
+
+**Qué mejorar**
+- Un enlace a `/panel` en la cabecera rompía el registro: Next.js precargaba la redirección a `/ingresar` hecha sin sesión y la reutilizaba tras registrarse. Se resolvió con `prefetch={false}`, pero no hay prueba automática que lo cubra.
+- El historial Git local y el de GitHub eran distintos; la entrega necesitó un bundle. Ya están unificados (rama `sprint-02` sobre `origin/main`).
+- La CI sigue sin ejecutarse en GitHub mientras la rama no se suba.
+
+**Acciones para el Sprint 3**
+1. Subir `sprint-02`, abrir el pull request y comprobar la CI en GitHub; borrar `tools/ci/` (el workflow ya está en `.github/`).
+2. Pruebas E2E con Playwright (LMS-TD-002) que cubran registro → panel y la publicación de un curso.
+3. Decidir LMS-DEC-004 y LMS-DEC-005 en el Sprint Planning.

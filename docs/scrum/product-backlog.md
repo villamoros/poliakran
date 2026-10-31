@@ -10,8 +10,8 @@ futuras; se estimarán en su Sprint Planning).
 |---|---|---|---|---|
 | LMS-EP01 | Identity & Access | Registro, autenticación y autorización | P0 | En curso (Sprints 1–2) |
 | LMS-EP11 | Platform Quality | Pruebas, seguridad y observabilidad | P0 | En curso |
-| LMS-EP02 | Course Catalog | Catálogo y consulta de cursos | P0 | En curso (Sprint 2) |
-| LMS-EP03 | Course Management | Creación y publicación de cursos | P0 | En curso (Sprint 2) |
+| LMS-EP02 | Course Catalog | Catálogo y consulta de cursos | P0 | Hecho (Sprint 2) |
+| LMS-EP03 | Course Management | Creación y publicación de cursos | P0 | Hecho (Sprint 2); exigir contenido al publicar en Sprint 3 |
 | LMS-EP04 | Content Management | Gestión de módulos y lecciones | P0 | Sprint 3 |
 | LMS-EP05 | Enrollment | Inscripción y acceso a cursos | P0 | Sprint 4 |
 | LMS-EP06 | Learning Progress | Seguimiento del progreso | P0 | Sprint 4 |
@@ -28,9 +28,9 @@ futuras; se estimarán en su Sprint Planning).
 | LMS-US-001 | Registro de estudiante | EP01 | P0 | 1 | Hecho |
 | LMS-US-002 | Inicio de sesión | EP01 | P0 | 1 | Hecho |
 | LMS-US-013 | Cierre de sesión | EP01 | P0 | 1 | Hecho |
-| LMS-US-003 | Consultar catálogo | EP02 | P0 | 2 | Hecho, pendiente de Review |
-| LMS-US-004 | Crear curso | EP03 | P0 | 2 | Hecho, pendiente de Review |
-| LMS-US-006 | Publicar curso | EP03 | P0 | 2 | Hecho, pendiente de Review |
+| LMS-US-003 | Consultar catálogo | EP02 | P0 | 2 | Hecho |
+| LMS-US-004 | Crear curso | EP03 | P0 | 2 | Hecho |
+| LMS-US-006 | Publicar curso | EP03 | P0 | 2 | Hecho |
 | LMS-US-014 | Asignar rol de administrador | EP01 | P0 | 2 | Parcial: primer owner/admin por comando (Sprint 2); conceder `admin` desde la app, pendiente |
 | LMS-US-005 | Administrar módulos y lecciones | EP04 | P0 | 3 | Por hacer |
 | LMS-US-012 | Gestionar recursos educativos | EP10 | P1 | 3 | Por hacer |

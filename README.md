@@ -71,7 +71,7 @@ El mentor de IA **no forma parte del MVP**. Desde el diseño inicial se mantiene
 
 ## Estado
 
-**Sprint 2 — Catálogo y administración inicial.** El administrador crea, edita,
+**Sprint 2 — Catálogo y administración inicial (cerrado el 2026-10-31).** El administrador crea, edita,
 publica y retira cursos; los visitantes consultan el catálogo en `/cursos`.
 Ver [docs/scrum/sprint-02.md](docs/scrum/sprint-02.md). Sprint anterior:
 [Sprint 1 — Fundamentos](docs/scrum/sprint-01.md).
